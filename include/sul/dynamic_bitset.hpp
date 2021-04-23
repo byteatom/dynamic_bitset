@@ -8,6 +8,18 @@
 #ifndef SUL_DYNAMIC_BITSET_HPP
 #define SUL_DYNAMIC_BITSET_HPP
 
+namespace std {
+#if (__cplusplus < 201402L)
+	template< class T = void >
+	struct bit_not {
+		constexpr T operator()(const T& arg) const
+		{
+			return ~arg;
+		}
+	};
+#endif
+}
+
 /**
  * @brief      @ref sul::dynamic_bitset version major.
  */
@@ -39,7 +51,9 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#if (__cplusplus >= 201703L)
 #include <string_view>
+#endif
 #include <functional>
 #include <type_traits>
 #include <limits>
@@ -47,7 +61,7 @@
 #include <cassert>
 
 #ifndef DYNAMIC_BITSET_NO_LIBPOPCNT
-#	if __has_include(<libpopcnt.h>)
+#	if 1//__has_include(<libpopcnt.h>)
 #		include <libpopcnt.h>
 #		define DYNAMIC_BITSET_USE_LIBPOPCNT
 #	endif
@@ -264,14 +278,20 @@ public:
 		 *
 		 * @complexity Constant.
 		 */
-		[[nodiscard]] constexpr bool operator~() const;
+	#if (__cplusplus >= 201703L)
+		[[nodiscard]]
+	#endif
+		constexpr bool operator~() const;
 
 		/**
 		 * @brief      bool conversion operator.
 		 *
 		 * @complexity Constant.
 		 */
-		[[nodiscard]] constexpr operator bool() const;
+	#if (__cplusplus >= 201703L)
+		[[nodiscard]]
+	#endif
+		constexpr operator bool() const;
 
 		/**
 		 * @brief      Deleted to avoid taking the address of a temporary proxy object.
@@ -339,14 +359,20 @@ public:
 	/**
 	 * @brief      Copy assignment operator.
 	 */
-	constexpr dynamic_bitset<Block, Allocator>& operator=(
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		dynamic_bitset<Block, Allocator>& operator=(
 	  const dynamic_bitset<Block, Allocator>& other) = default;
 
 	/**
 	 * @brief      Move assignment operator.
 	 */
-	constexpr dynamic_bitset<Block, Allocator>& operator=(
-	  dynamic_bitset<Block, Allocator>&& other) noexcept = default;
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		dynamic_bitset<Block, Allocator>& operator=(
+	  dynamic_bitset<Block, Allocator>&& other) /*noexcept*/ = default;
 
 	/**
 	 * @brief      Constructs an empty @ref sul::dynamic_bitset.
@@ -373,7 +399,10 @@ public:
 	 *
 	 * @complexity Linear in @p nbits / @ref bits_per_block.
 	 */
-	constexpr explicit dynamic_bitset(size_type nbits,
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif 
+		explicit dynamic_bitset(size_type nbits,
 	                                  unsigned long long init_val = 0,
 	                                  const allocator_type& allocator = allocator_type());
 
@@ -389,7 +418,10 @@ public:
 	 *
 	 * @complexity Linear in @p init_vals.size().
 	 */
-	constexpr dynamic_bitset(std::initializer_list<block_type> init_vals,
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif 
+		dynamic_bitset(std::initializer_list<block_type> init_vals,
 	                         const allocator_type& allocator = allocator_type());
 
 	/**
@@ -415,6 +447,7 @@ public:
 	 *
 	 * @complexity Linear in std\::min(@p n, @p str.size() - @p pos).
 	 */
+#if (__cplusplus >= 201703L)
 	template<typename _CharT, typename _Traits>
 	constexpr explicit dynamic_bitset(
 	  std::basic_string_view<_CharT, _Traits> str,
@@ -490,6 +523,7 @@ public:
 	  _CharT zero = _CharT('0'),
 	  _CharT one = _CharT('1'),
 	  const allocator_type& allocator = allocator_type());
+#endif
 
 	/**
 	 * @brief      Destructor.
@@ -509,7 +543,10 @@ public:
 	 *             Additional complexity possible due to reallocation if capacity is less than @p
 	 *             nbits.
 	 */
-	constexpr void resize(size_type nbits, bool value = false);
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		void resize(size_type nbits, bool value = false);
 
 	/**
 	 * @brief      Clears the @ref sul::dynamic_bitset, resize it to 0.
@@ -533,7 +570,10 @@ public:
 	 *
 	 * @complexity Amortized constant.
 	 */
-	constexpr void push_back(bool value);
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		void push_back(bool value);
 
 	/**
 	 * @brief      Remove the last bit of the @ref sul::dynamic_bitset.
@@ -543,7 +583,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	constexpr void pop_back();
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		void pop_back();
 
 	/**
 	 * @brief      Append a block of bits @p block at the end of the @ref sul::dynamic_bitset.
@@ -698,7 +741,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr dynamic_bitset<Block, Allocator> operator<<(size_type shift) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr dynamic_bitset<Block, Allocator> operator<<(size_type shift) const;
 
 	/**
 	 * @brief      Performs binary shift left of @p shift bits.
@@ -716,7 +762,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr dynamic_bitset<Block, Allocator> operator>>(size_type shift) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr dynamic_bitset<Block, Allocator> operator>>(size_type shift) const;
 
 	/**
 	 * @brief      Performs a unary NOT on all bits.
@@ -731,7 +780,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr dynamic_bitset<Block, Allocator> operator~() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr dynamic_bitset<Block, Allocator> operator~() const;
 
 	/**
 	 * @brief      Set the bits of the range \[@p pos, @p pos + @p len\[ to value @p value.
@@ -750,7 +802,10 @@ public:
 	 *
 	 * @complexity Linear in @p len.
 	 */
-	constexpr dynamic_bitset<Block, Allocator>& set(size_type pos, size_type len, bool value);
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		dynamic_bitset<Block, Allocator>& set(size_type pos, size_type len, bool value);
 
 	/**
 	 * @brief      Set the bit at the position @p pos to @a true or value @p value.
@@ -766,7 +821,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	constexpr dynamic_bitset<Block, Allocator>& set(size_type pos, bool value = true);
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		dynamic_bitset<Block, Allocator>& set(size_type pos, bool value = true);
 
 	/**
 	 * @brief      Set all the bits of the @ref sul::dynamic_bitset to @a true.
@@ -870,7 +928,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr bool test(size_type pos) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool test(size_type pos) const;
 
 	/**
 	 * @brief      Test the value of the bit at position @p pos and set it to @a true or value @p
@@ -887,7 +948,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr bool test_set(size_type pos, bool value = true);
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool test_set(size_type pos, bool value = true);
 
 	/**
 	 * @brief      Checks if all bits are set to @a true.
@@ -900,7 +964,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool all() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool all() const;
 
 	/**
 	 * @brief      Checks if any bits are set to @a true.
@@ -913,7 +980,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool any() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool any() const;
 
 	/**
 	 * @brief      Checks if none of the bits are set to @a true.
@@ -926,7 +996,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool none() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool none() const;
 
 	/**
 	 * @brief      Count the number of bits set to @a true.
@@ -937,7 +1010,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr size_type count() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type count() const noexcept;
 
 	/**
 	 * @brief      Accesses the bit at position @p pos.
@@ -952,7 +1028,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr reference operator[](size_type pos);
+#if (__cplusplus >= 201703L)
+	[[nodiscard]] constexpr
+#endif
+	reference operator[](size_type pos);
 
 	/**
 	 * @brief      Accesses the bit at position @p pos.
@@ -967,7 +1046,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr const_reference operator[](size_type pos) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr const_reference operator[](size_type pos) const;
 
 	/**
 	 * @brief      Give the number of bits of the @ref sul::dynamic_bitset.
@@ -976,7 +1058,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr size_type size() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type size() const noexcept;
 
 	/**
 	 * @brief      Give the number of blocks used by the @ref sul::dynamic_bitset.
@@ -985,7 +1070,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr size_type num_blocks() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type num_blocks() const noexcept;
 
 	/**
 	 * @brief      Checks if the @ref sul::dynamic_bitset is empty.
@@ -999,7 +1087,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr bool empty() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool empty() const noexcept;
 
 	/**
 	 * @brief      Give the number of bits that the @ref sul::dynamic_bitset has currently allocated
@@ -1009,7 +1100,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr size_type capacity() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type capacity() const noexcept;
 
 	/**
 	 * @brief      Increase the capacity of the @ref sul::dynamic_bitset to a value that's greater
@@ -1063,7 +1157,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool is_subset_of(const dynamic_bitset<Block, Allocator>& bitset) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool is_subset_of(const dynamic_bitset<Block, Allocator>& bitset) const;
 
 	/**
 	 * @brief      Determines if this @ref sul::dynamic_bitset is a proper subset of @p bitset.
@@ -1091,7 +1188,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool is_proper_subset_of(
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool is_proper_subset_of(
 	  const dynamic_bitset<Block, Allocator>& bitset) const;
 
 	/**
@@ -1117,7 +1217,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr bool intersects(const dynamic_bitset<Block, Allocator>& bitset) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr bool intersects(const dynamic_bitset<Block, Allocator>& bitset) const;
 
 	/**
 	 * @brief      Find the position of the first bit set in the @ref sul::dynamic_bitset starting
@@ -1130,7 +1233,10 @@ public:
 	 *
 	 * @complexity Linear in the size of the @ref sul::dynamic_bitset.
 	 */
-	[[nodiscard]] constexpr size_type find_first() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type find_first() const;
 
 	/**
 	 * @brief      Find the position of the first bit set in the range \[@p prev + 1, @ref size()\[
@@ -1147,7 +1253,10 @@ public:
 	 *
 	 * @complexity Linear in @ref size() - @p prev.
 	 */
-	[[nodiscard]] constexpr size_type find_next(size_type prev) const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr size_type find_next(size_type prev) const;
 
 	/**
 	 * @brief      Exchanges the bits of this @ref sul::dynamic_bitset with those of @p other.
@@ -1167,7 +1276,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr allocator_type get_allocator() const;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr allocator_type get_allocator() const;
 
 	/**
 	 * @brief      Generate a string representation of the @ref sul::dynamic_bitset.
@@ -1192,7 +1304,10 @@ public:
 	template<typename _CharT = char,
 	         typename _Traits = std::char_traits<_CharT>,
 	         typename _Alloc = std::allocator<_CharT>>
-	[[nodiscard]] constexpr std::basic_string<_CharT, _Traits, _Alloc> to_string(
+#if (__cplusplus >= 201703L)
+		[[nodiscard]]
+#endif
+	constexpr std::basic_string<_CharT, _Traits, _Alloc> to_string(
 	  _CharT zero = _CharT('0'),
 	  _CharT one = _CharT('1')) const;
 
@@ -1256,7 +1371,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr block_type* data() noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]] constexpr
+#endif
+	block_type* data() noexcept;
 
 	/**
 	 * @brief      Return a pointer to the underlying array serving as blocks storage.
@@ -1290,7 +1408,10 @@ public:
 	 *
 	 * @complexity Constant.
 	 */
-	[[nodiscard]] constexpr const block_type* data() const noexcept;
+#if (__cplusplus >= 201703L)
+	[[nodiscard]]
+#endif
+	constexpr const block_type* data() const noexcept;
 
 	/**
 	 * @brief      Test if two @ref sul::dynamic_bitset have the same content.
@@ -1391,16 +1512,23 @@ private:
 
 	static constexpr size_type first_on(const block_type& block) noexcept;
 
+#if (__cplusplus >= 201703L)
 	template<typename _CharT, typename _Traits>
 	constexpr void init_from_string(std::basic_string_view<_CharT, _Traits> str,
 	                                typename std::basic_string_view<_CharT, _Traits>::size_type pos,
 	                                typename std::basic_string_view<_CharT, _Traits>::size_type n,
 	                                _CharT zero,
 	                                _CharT one);
-
-	constexpr block_type& get_block(size_type pos);
+#endif
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		block_type& get_block(size_type pos);
 	constexpr const block_type& get_block(size_type pos) const;
-	constexpr block_type& last_block();
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		block_type& last_block();
 	constexpr block_type last_block() const;
 
 	// used bits in the last block
@@ -1416,7 +1544,10 @@ private:
 	constexpr void apply_right_shift(size_type shift);
 
 	// reset unused bits to 0
-	constexpr void sanitize();
+#if (__cplusplus >= 201703L)
+	constexpr
+#endif
+		void sanitize();
 
 	// check functions used in asserts
 	constexpr bool check_unused_bits() const noexcept;
@@ -1426,8 +1557,10 @@ private:
 
 // Deduction guideline for expressions like "dynamic_bitset a(32);" with an integral type as parameter
 // to use the constructor with the initial size instead of the constructor with the allocator.
+#if (__cplusplus >= 201703L)
 template<typename integral_type, typename = std::enable_if_t<std::is_integral_v<integral_type>>>
 dynamic_bitset(integral_type) -> dynamic_bitset<>;
+#endif
 
 //=================================================================================================
 // dynamic_bitset external functions declarations
@@ -1883,7 +2016,10 @@ constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(const allocator_type&
 }
 
 template<typename Block, typename Allocator>
-constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(size_type nbits,
+#if (__cplusplus >= 201703L)
+constexpr
+#endif 
+dynamic_bitset<Block, Allocator>::dynamic_bitset(size_type nbits,
                                                            unsigned long long init_val,
                                                            const allocator_type& allocator)
   : m_blocks(blocks_required(nbits), allocator), m_bits_number(nbits)
@@ -1894,7 +2030,7 @@ constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(size_type nbits,
 	}
 
 	constexpr size_type init_val_required_blocks = sizeof(unsigned long long) / sizeof(block_type);
-	if constexpr(init_val_required_blocks == 1)
+	if /*constexpr*/(init_val_required_blocks == 1)
 	{
 		m_blocks[0] = init_val;
 	}
@@ -1911,7 +2047,10 @@ constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(size_type nbits,
 }
 
 template<typename Block, typename Allocator>
-constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(
+#if (__cplusplus >= 201703L)
+constexpr
+#endif 
+dynamic_bitset<Block, Allocator>::dynamic_bitset(
   std::initializer_list<block_type> init_vals,
   const allocator_type& allocator)
   : m_blocks(allocator), m_bits_number(0)
@@ -1919,6 +2058,7 @@ constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(
 	append(init_vals);
 }
 
+#if (__cplusplus >= 201703L)
 template<typename Block, typename Allocator>
 template<typename _CharT, typename _Traits>
 constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(
@@ -1962,9 +2102,13 @@ constexpr dynamic_bitset<Block, Allocator>::dynamic_bitset(
 {
 	init_from_string(std::basic_string_view<_CharT, _Traits>(str), pos, n, zero, one);
 }
+#endif
 
 template<typename Block, typename Allocator>
-constexpr void dynamic_bitset<Block, Allocator>::resize(size_type nbits, bool value)
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+void dynamic_bitset<Block, Allocator>::resize(size_type nbits, bool value)
 {
 	if(nbits == m_bits_number)
 	{
@@ -2003,7 +2147,10 @@ constexpr void dynamic_bitset<Block, Allocator>::clear()
 }
 
 template<typename Block, typename Allocator>
-constexpr void dynamic_bitset<Block, Allocator>::push_back(bool value)
+#if (__cplusplus >= 201703L)
+constexpr
+#endif 
+void dynamic_bitset<Block, Allocator>::push_back(bool value)
 {
 	const size_type new_last_bit = m_bits_number++;
 	if(m_bits_number <= m_blocks.size() * bits_per_block)
@@ -2022,7 +2169,10 @@ constexpr void dynamic_bitset<Block, Allocator>::push_back(bool value)
 }
 
 template<typename Block, typename Allocator>
-constexpr void dynamic_bitset<Block, Allocator>::pop_back()
+#if (__cplusplus >= 201703L)
+constexpr
+#endif 
+void dynamic_bitset<Block, Allocator>::pop_back()
 {
 	if(empty())
 	{
@@ -2069,7 +2219,7 @@ constexpr void dynamic_bitset<Block, Allocator>::append(std::initializer_list<bl
 		return;
 	}
 
-	append(std::cbegin(blocks), std::cend(blocks));
+	append(blocks.cbegin(), blocks.cend());
 }
 
 template<typename Block, typename Allocator>
@@ -2083,9 +2233,9 @@ constexpr void dynamic_bitset<Block, Allocator>::append(BlockInputIterator first
 	}
 
 	// if random access iterators, std::distance complexity is constant
-	if constexpr(std::is_same_v<
+	if /*constexpr*/(std::is_same<
 	               typename std::iterator_traits<BlockInputIterator>::iterator_category,
-	               std::random_access_iterator_tag>)
+	               std::random_access_iterator_tag>::value)
 	{
 		assert(std::distance(first, last) > 0);
 		m_blocks.reserve(m_blocks.size() + static_cast<size_type>(std::distance(first, last)));
@@ -2231,7 +2381,10 @@ constexpr dynamic_bitset<Block, Allocator> dynamic_bitset<Block, Allocator>::ope
 }
 
 template<typename Block, typename Allocator>
-constexpr dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::set(size_type pos,
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::set(size_type pos,
                                                                                   size_type len,
                                                                                   bool value)
 {
@@ -2279,7 +2432,10 @@ constexpr dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::se
 }
 
 template<typename Block, typename Allocator>
-constexpr dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::set(size_type pos,
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::set(size_type pos,
                                                                                   bool value)
 {
 	assert(pos < size());
@@ -2382,7 +2538,7 @@ template<typename Block, typename Allocator>
 constexpr dynamic_bitset<Block, Allocator>& dynamic_bitset<Block, Allocator>::flip()
 {
 	std::transform(
-	  std::cbegin(m_blocks), std::cend(m_blocks), std::begin(m_blocks), std::bit_not<block_type>());
+	  m_blocks.cbegin(), m_blocks.cend(), m_blocks.begin(), std::bit_not<block_type>());
 	sanitize();
 	return *this;
 }
@@ -2501,7 +2657,10 @@ constexpr typename dynamic_bitset<Block, Allocator>::size_type dynamic_bitset<Bl
 }
 
 template<typename Block, typename Allocator>
-constexpr typename dynamic_bitset<Block, Allocator>::reference dynamic_bitset<Block, Allocator>::
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+typename dynamic_bitset<Block, Allocator>::reference dynamic_bitset<Block, Allocator>::
 operator[](size_type pos)
 {
 	assert(pos < size());
@@ -2699,18 +2858,19 @@ constexpr std::basic_string<_CharT, _Traits, _Alloc> dynamic_bitset<Block, Alloc
 	return str;
 }
 
+#if (__cplusplus >= 201703L)
 template<typename Block, typename Allocator>
 template<typename Function, typename... Parameters>
 constexpr void dynamic_bitset<Block, Allocator>::iterate_bits_on(Function&& function,
                                                                  Parameters&&... parameters) const
 {
-	if constexpr(!std::is_invocable_v<Function, size_t, Parameters...>)
+	if /*constexpr*/(!std::is_invocable_v<Function, size_t, Parameters...>)
 	{
 		static_assert(dependent_false<Function>::value, "Function take invalid arguments");
 		// function should take (size_t, parameters...) as arguments
 	}
 
-	if constexpr(std::is_same_v<std::invoke_result_t<Function, size_t, Parameters...>, void>)
+	if /*constexpr*/(std::is_same<std::invoke_result_t<Function, size_t, Parameters...>::value, void>)
 	{
 		size_t i_bit = find_first();
 		while(i_bit != npos)
@@ -2720,7 +2880,7 @@ constexpr void dynamic_bitset<Block, Allocator>::iterate_bits_on(Function&& func
 			i_bit = find_next(i_bit);
 		}
 	}
-	else if constexpr(std::is_convertible_v<std::invoke_result_t<Function, size_t, Parameters...>,
+	else if /*constexpr*/(std::is_convertible_v<std::invoke_result_t<Function, size_t, Parameters...>,
 	                                        bool>)
 	{
 		size_t i_bit = find_first();
@@ -2740,9 +2900,13 @@ constexpr void dynamic_bitset<Block, Allocator>::iterate_bits_on(Function&& func
 		// return type should be void, or convertible to bool
 	}
 }
+#endif
 
 template<typename Block, typename Allocator>
-constexpr typename dynamic_bitset<Block, Allocator>::block_type* dynamic_bitset<Block, Allocator>::
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+typename dynamic_bitset<Block, Allocator>::block_type* dynamic_bitset<Block, Allocator>::
   data() noexcept
 {
 	return m_blocks.data();
@@ -2757,14 +2921,20 @@ constexpr const typename dynamic_bitset<Block, Allocator>::block_type* dynamic_b
 }
 
 template<typename Block_, typename Allocator_>
-[[nodiscard]] constexpr bool operator==(const dynamic_bitset<Block_, Allocator_>& lhs,
+#if (__cplusplus >= 201703L)
+[[nodiscard]]
+#endif
+constexpr bool operator==(const dynamic_bitset<Block_, Allocator_>& lhs,
                                         const dynamic_bitset<Block_, Allocator_>& rhs)
 {
 	return (lhs.m_bits_number == rhs.m_bits_number) && (lhs.m_blocks == rhs.m_blocks);
 }
 
 template<typename Block_, typename Allocator_>
-[[nodiscard]] constexpr bool operator<(const dynamic_bitset<Block_, Allocator_>& lhs,
+#if (__cplusplus >= 201703L)
+[[nodiscard]]
+#endif
+constexpr bool operator<(const dynamic_bitset<Block_, Allocator_>& lhs,
                                        const dynamic_bitset<Block_, Allocator_>& rhs)
 {
 	using size_type = typename dynamic_bitset<Block_, Allocator_>::size_type;
@@ -2911,15 +3081,15 @@ constexpr typename dynamic_bitset<Block, Allocator>::size_type dynamic_bitset<Bl
 
 #if defined(DYNAMIC_BITSET_GCC) \
   || (defined(DYNAMIC_BITSET_CLANG) && defined(DYNAMIC_BITSET_CLANG_builtin_popcount))
-	if constexpr(std::is_same_v<block_type, unsigned long long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long long>::value)
 	{
 		return static_cast<size_type>(__builtin_popcountll(block));
 	}
-	if constexpr(std::is_same_v<block_type, unsigned long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long>::value)
 	{
 		return static_cast<size_type>(__builtin_popcountl(block));
 	}
-	if constexpr(sizeof(block_type) <= sizeof(unsigned int))
+	if /*constexpr*/(sizeof(block_type) <= sizeof(unsigned int))
 	{
 		return static_cast<size_type>(__builtin_popcount(static_cast<unsigned int>(block)));
 	}
@@ -2948,15 +3118,15 @@ constexpr typename dynamic_bitset<Block, Allocator>::size_type dynamic_bitset<Bl
 #if defined(DYNAMIC_BITSET_GCC) \
   || (defined(DYNAMIC_BITSET_CLANG) && defined(DYNAMIC_BITSET_CLANG_builtin_popcount))
 	const block_type shifted_block = block_type(block << (bits_per_block - nbits));
-	if constexpr(std::is_same_v<block_type, unsigned long long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long long>::value)
 	{
 		return static_cast<size_type>(__builtin_popcountll(shifted_block));
 	}
-	if constexpr(std::is_same_v<block_type, unsigned long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long>::value)
 	{
 		return static_cast<size_type>(__builtin_popcountl(shifted_block));
 	}
-	if constexpr(sizeof(block_type) <= sizeof(unsigned int))
+	if /*constexpr*/(sizeof(block_type) <= sizeof(unsigned int))
 	{
 		return static_cast<size_type>(__builtin_popcount(static_cast<unsigned int>(shifted_block)));
 	}
@@ -2981,34 +3151,34 @@ constexpr typename dynamic_bitset<Block, Allocator>::size_type dynamic_bitset<Bl
 
 #if defined(DYNAMIC_BITSET_GCC) \
   || (defined(DYNAMIC_BITSET_CLANG) && defined(DYNAMIC_BITSET_CLANG_builtin_ctz))
-	if constexpr(std::is_same_v<block_type, unsigned long long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long long>::value)
 	{
 		return static_cast<size_type>(__builtin_ctzll(block));
 	}
-	if constexpr(std::is_same_v<block_type, unsigned long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long>::value)
 	{
 		return static_cast<size_type>(__builtin_ctzl(block));
 	}
-	if constexpr(sizeof(block_type) <= sizeof(unsigned int))
+	if /*constexpr*/(sizeof(block_type) <= sizeof(unsigned int))
 	{
 		return static_cast<size_type>(__builtin_ctz(static_cast<unsigned int>(block)));
 	}
 #elif defined(DYNAMIC_BITSET_MSVC)
 #	if defined(DYNAMIC_BITSET_MSVC_64)
-	if constexpr(std::is_same_v<block_type, unsigned __int64>)
+	if /*constexpr*/(std::is_same<block_type, unsigned __int64>::value)
 	{
 		unsigned long index = std::numeric_limits<unsigned long>::max();
 		_BitScanForward64(&index, block);
 		return static_cast<size_type>(index);
 	}
 #	endif
-	if constexpr(std::is_same_v<block_type, unsigned long>)
+	if /*constexpr*/(std::is_same<block_type, unsigned long>::value)
 	{
 		unsigned long index = std::numeric_limits<unsigned long>::max();
 		_BitScanForward(&index, block);
 		return static_cast<size_type>(index);
 	}
-	if constexpr(sizeof(block_type) <= sizeof(unsigned long))
+	if /*constexpr*/(sizeof(block_type) <= sizeof(unsigned long))
 	{
 		unsigned long index = std::numeric_limits<unsigned long>::max();
 		_BitScanForward(&index, static_cast<unsigned long>(block));
@@ -3028,6 +3198,7 @@ constexpr typename dynamic_bitset<Block, Allocator>::size_type dynamic_bitset<Bl
 	return npos;
 }
 
+#if (__cplusplus >= 201703L)
 template<typename Block, typename Allocator>
 template<typename _CharT, typename _Traits>
 constexpr void dynamic_bitset<Block, Allocator>::init_from_string(
@@ -3054,9 +3225,13 @@ constexpr void dynamic_bitset<Block, Allocator>::init_from_string(
 		}
 	}
 }
+#endif
 
 template<typename Block, typename Allocator>
-constexpr typename dynamic_bitset<Block, Allocator>::block_type& dynamic_bitset<Block, Allocator>::
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+typename dynamic_bitset<Block, Allocator>::block_type& dynamic_bitset<Block, Allocator>::
   get_block(size_type pos)
 {
 	return m_blocks[block_index(pos)];
@@ -3071,7 +3246,10 @@ constexpr const typename dynamic_bitset<Block, Allocator>::block_type& dynamic_b
 }
 
 template<typename Block, typename Allocator>
-constexpr typename dynamic_bitset<Block, Allocator>::block_type& dynamic_bitset<Block, Allocator>::
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+typename dynamic_bitset<Block, Allocator>::block_type& dynamic_bitset<Block, Allocator>::
   last_block()
 {
 	return m_blocks[m_blocks.size() - 1];
@@ -3105,9 +3283,9 @@ constexpr void dynamic_bitset<Block, Allocator>::apply(
   BinaryOperation binary_op)
 {
 	assert(num_blocks() == other.num_blocks());
-	std::transform(std::cbegin(m_blocks),
-	               std::cend(m_blocks),
-	               std::cbegin(other.m_blocks),
+	std::transform(m_blocks.cbegin(),
+	               m_blocks.cend(),
+	               other.m_blocks.cbegin(),
 	               std::begin(m_blocks),
 	               binary_op);
 }
@@ -3116,7 +3294,7 @@ template<typename Block, typename Allocator>
 template<typename UnaryOperation>
 constexpr void dynamic_bitset<Block, Allocator>::apply(UnaryOperation unary_op)
 {
-	std::transform(std::cbegin(m_blocks), std::cend(m_blocks), std::begin(m_blocks), unary_op);
+	std::transform(m_blocks.cbegin(), m_blocks.cend(), m_blocks.begin(), unary_op);
 }
 
 template<typename Block, typename Allocator>
@@ -3192,7 +3370,10 @@ constexpr void dynamic_bitset<Block, Allocator>::apply_right_shift(size_type shi
 }
 
 template<typename Block, typename Allocator>
-constexpr void dynamic_bitset<Block, Allocator>::sanitize()
+#if (__cplusplus >= 201703L)
+constexpr
+#endif
+void dynamic_bitset<Block, Allocator>::sanitize()
 {
 	size_type shift = m_bits_number % bits_per_block;
 	if(shift > 0)
